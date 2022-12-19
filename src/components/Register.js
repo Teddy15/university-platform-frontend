@@ -1,12 +1,10 @@
 import React, { useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
-import isEmail from 'validator';
 
-import { register } from "../redux/actions/auth";
+import AuthService from "../services/auth.service";
+import {useNavigate} from "react-router-dom";
 
 const required = (value) => {
     if (!value) {
@@ -18,7 +16,7 @@ const required = (value) => {
     }
 };
 
-const validateEmail = (value) => {
+const validEmail = (value) => {
     // if (!isEmail(value)) {
     //     return (
     //         <div className="alert alert-danger" role="alert">
@@ -28,7 +26,7 @@ const validateEmail = (value) => {
     // }
 };
 
-const validateUsername = (value) => {
+const validUsername = (value) => {
     if (value.length < 3 || value.length > 20) {
         return (
             <div className="alert alert-danger" role="alert">
@@ -38,17 +36,7 @@ const validateUsername = (value) => {
     }
 };
 
-const validateFullName = (value) => {
-    if (value.length < 5 || value.length > 50) {
-        return (
-            <div className="alert alert-danger" role="alert">
-                The username must be between 5 and 5 characters.
-            </div>
-        );
-    }
-};
-
-const validatePassword = (value) => {
+const validPassword = (value) => {
     if (value.length < 6 || value.length > 40) {
         return (
             <div className="alert alert-danger" role="alert">
@@ -58,50 +46,71 @@ const validatePassword = (value) => {
     }
 };
 
+const validFullName = (value) => {
+    if (value.length < 5 || value.length > 50) {
+        return (
+            <div className="alert alert-danger" role="alert">
+                The password must be between 5 and 50 characters.
+            </div>
+        );
+    }
+};
+
 const Register = () => {
     const form = useRef();
-    const signUpButton = useRef();
+    const checkBtn = useRef();
+    const nav = useNavigate();
 
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [fullName, setFullName] = useState("");
     const [password, setPassword] = useState("");
     const [successful, setSuccessful] = useState(false);
-
-    const { message } = useSelector(state => state.message);
-    const dispatch = useDispatch();
+    const [message, setMessage] = useState("");
 
     const onChangeUsername = (e) => {
-        setUsername(e.target.value);
+        setUsername( e.target.value);
     };
 
     const onChangeEmail = (e) => {
-        setEmail(e.target.value);
+        setEmail( e.target.value);
     };
 
     const onChangeFullName = (e) => {
-        setFullName(e.target.value);
-    }
+        setFullName( e.target.value);
+    };
 
     const onChangePassword = (e) => {
-        setPassword(e.target.value);
+        setPassword( e.target.value);
     };
 
     const handleRegister = (e) => {
         e.preventDefault();
 
+        setMessage("");
         setSuccessful(false);
 
         form.current.validateAll();
 
-        if (signUpButton.current.context._errors.length === 0) {
-            dispatch(register(username, email, fullName, password, "ROLE_USER"))
-                .then(() => {
+        if (checkBtn.current.context._errors.length === 0) {
+            AuthService.register(username, email, fullName, password, "ROLE_USER").then(
+                (response) => {
+                    setMessage(response.data.message);
                     setSuccessful(true);
-                })
-                .catch(() => {
+                    nav("/login");
+                },
+                (error) => {
+                    const resMessage =
+                        (error.response &&
+                            error.response.data &&
+                            error.response.data.message) ||
+                        error.message ||
+                        error.toString();
+
+                    setMessage(resMessage);
                     setSuccessful(false);
-                });
+                }
+            );
         }
     };
 
@@ -125,7 +134,7 @@ const Register = () => {
                                     name="username"
                                     value={username}
                                     onChange={onChangeUsername}
-                                    validations={[required, validateUsername]}
+                                    validations={[required, validUsername]}
                                 />
                             </div>
 
@@ -137,7 +146,7 @@ const Register = () => {
                                     name="email"
                                     value={email}
                                     onChange={onChangeEmail}
-                                    validations={[required, validateEmail]}
+                                    validations={[required, validEmail]}
                                 />
                             </div>
 
@@ -149,7 +158,7 @@ const Register = () => {
                                     name="fullName"
                                     value={fullName}
                                     onChange={onChangeFullName}
-                                    validations={[required, validateFullName]}
+                                    validations={[required, validFullName]}
                                 />
                             </div>
 
@@ -161,7 +170,7 @@ const Register = () => {
                                     name="password"
                                     value={password}
                                     onChange={onChangePassword}
-                                    validations={[required, validatePassword]}
+                                    validations={[required, validPassword]}
                                 />
                             </div>
 
@@ -173,12 +182,15 @@ const Register = () => {
 
                     {message && (
                         <div className="form-group">
-                            <div className={ successful ? "alert alert-success" : "alert alert-danger" } role="alert">
+                            <div
+                                className={ successful ? "alert alert-success" : "alert alert-danger" }
+                                role="alert"
+                            >
                                 {message}
                             </div>
                         </div>
                     )}
-                    <CheckButton style={{ display: "none" }} ref={signUpButton} />
+                    <CheckButton style={{ display: "none" }} ref={checkBtn} />
                 </Form>
             </div>
         </div>

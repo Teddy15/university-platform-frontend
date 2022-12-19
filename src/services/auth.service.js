@@ -1,11 +1,9 @@
 import axios from "axios";
 
-const API_URL = "http://localhost:8080/uni-platform/auth";
+const API_URL = "http://localhost:8080/uni-platform/auth/";
 
-
-
-const register = (username, email, fullName, password, role ) => {
-    return axios.post(API_URL + "/signup", {
+const register = (username, email, fullName, password, role) => {
+    return axios.post(API_URL + "signup", {
         username,
         email,
         fullName,
@@ -16,7 +14,7 @@ const register = (username, email, fullName, password, role ) => {
 
 const login = (username, password) => {
     return axios
-        .post(API_URL + "/signin", {
+        .post(API_URL + "signin", {
             username,
             password,
         })
@@ -30,11 +28,18 @@ const login = (username, password) => {
 };
 
 const logout = () => {
-    localStorage.removeItem("user");
+    localStorage.clear();
 };
 
-export default {
+const getCurrentUser = () => {
+    return JSON.parse(localStorage.getItem("user"));
+};
+
+const AuthService = {
     register,
     login,
     logout,
+    getCurrentUser,
 };
+
+export default AuthService;

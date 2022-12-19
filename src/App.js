@@ -1,35 +1,31 @@
-import React, { useEffect, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Routes, Route, Link, useLocation } from "react-router-dom";
-
+import React, { useState, useEffect } from "react";
+import { Routes, Route, Link } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
+import AuthService from "./services/auth.service";
+
 import Login from "./components/Login";
 import Register from "./components/Register";
-import Home from "./components/Home";
+import Posts from "./components/Posts";
 import Profile from "./components/Profile";
-
-import { logout } from "./redux/actions/auth";
-import { clearMessage } from "./redux/actions/message";
-
-import AuthVerify from "./common/AuthVerify";
+import CreatePost from "./components/CreatePost";
+import Post from "./components/Post";
 
 const App = () => {
-  const { user: currentUser } = useSelector((state) => state.auth);
-  const dispatch = useDispatch();
-
-  let location = useLocation();
+  const [currentUser, setCurrentUser] = useState(undefined);
 
   useEffect(() => {
-    if (["/login", "/register"].includes(location.pathname)) {
-      dispatch(clearMessage()); // clear message when changing location
-    }
-  }, [dispatch, location]);
+    const user = AuthService.getCurrentUser();
 
-  const logOut = useCallback(() => {
-    dispatch(logout());
-  }, [dispatch]);
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, []);
+
+  const logOut = () => {
+    AuthService.logout();
+  };
 
   return (
       <div>
@@ -39,8 +35,13 @@ const App = () => {
           </Link>
           <div className="navbar-nav mr-auto">
             <li className="nav-item">
-              <Link to={"/home"} className="nav-link">
-                Home
+              <Link to={"/posts"} className="nav-link">
+                Posts
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link to={"/posts/create"} className="nav-link">
+                Create Post
               </Link>
             </li>
           </div>
@@ -54,7 +55,7 @@ const App = () => {
                 </li>
                 <li className="nav-item">
                   <a href="/login" className="nav-link" onClick={logOut}>
-                    LogOut
+                    Log Out
                   </a>
                 </li>
               </div>
@@ -77,15 +78,15 @@ const App = () => {
 
         <div className="container mt-3">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/home" element={<Home />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/" element={<Posts/>} />
+            <Route path="/posts" element={<Posts/>} />
+            <Route path="/posts/create" element={<CreatePost/>} />
+            <Route path="/posts/:id" element = {<Post/>} />
+            <Route path="/login" element={<Login/>} />
+            <Route path="/register" element={<Register/>} />
+            <Route path="/profile" element={<Profile/>} />
           </Routes>
         </div>
-
-        <AuthVerify logOut={logOut}/>
       </div>
   );
 };

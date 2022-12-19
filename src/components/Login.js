@@ -1,12 +1,10 @@
 import React, { useState, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { Navigate, useNavigate }  from "react-router-dom";
-
+import { useNavigate } from 'react-router-dom';
 import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 
-import { login } from '../redux/actions/auth';
+import AuthService from "../services/auth.service";
 
 const required = (value) => {
     if (!value) {
@@ -18,23 +16,19 @@ const required = (value) => {
     }
 };
 
-const Login = (props) => {
+const Login = () => {
     let navigate = useNavigate();
 
     const form = useRef();
-    const signInButton = useRef();
+    const checkBtn = useRef();
 
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [loading, setLoading] = useState(false);
-
-    const { isLoggedIn } = useSelector(state => state.auth);
-    const { message } = useSelector(state => state.message);
-
-    const dispatch = useDispatch();
+    const [message, setMessage] = useState("");
 
     const onChangeUsername = (e) => {
-        setUsername(e.target.value);
+        setUsername( e.target.value);
     };
 
     const onChangePassword = (e) => {
@@ -44,27 +38,33 @@ const Login = (props) => {
     const handleLogin = (e) => {
         e.preventDefault();
 
+        setMessage("");
         setLoading(true);
 
         form.current.validateAll();
 
-        if (signInButton.current.context._errors.length === 0) {
-            dispatch(login(username, password))
-                .then(() => {
+        if (checkBtn.current.context._errors.length === 0) {
+            AuthService.login(username, password).then(
+                () => {
                     navigate("/profile");
                     window.location.reload();
-                })
-                .catch(() => {
+                },
+                (error) => {
+                    const resMessage =
+                        (error.response &&
+                            error.response.data &&
+                            error.response.data.message) ||
+                        error.message ||
+                        error.toString();
+
                     setLoading(false);
-                });
+                    setMessage(resMessage);
+                }
+            );
         } else {
             setLoading(false);
         }
     };
-
-    if (isLoggedIn) {
-        return <Navigate to="/profile" />;
-    }
 
     return (
         <div className="col-md-12">
@@ -103,7 +103,7 @@ const Login = (props) => {
                     <div className="form-group">
                         <button className="btn btn-primary btn-block" disabled={loading}>
                             {loading && (
-                                <span className="spinner-border spinner-border-sm"/>
+                                <span className="spinner-border spinner-border-sm"></span>
                             )}
                             <span>Login</span>
                         </button>
@@ -116,7 +116,7 @@ const Login = (props) => {
                             </div>
                         </div>
                     )}
-                    <CheckButton style={{ display: "none" }} ref={signInButton} />
+                    <CheckButton style={{ display: "none" }} ref={checkBtn} />
                 </Form>
             </div>
         </div>
