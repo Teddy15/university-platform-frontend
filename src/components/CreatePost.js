@@ -1,15 +1,33 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import PostService from "../services/post.service";
+import CategoryService from "../services/category.service";
 
 const CreatePost = () => {
     const initialPostState = {
         id: null,
         title: "",
         content: "",
-        categoryId: null
+        categoryId: 1
     };
     const [post, setPost] = useState(initialPostState);
+    const [categories, setCategories] = useState([]);
     const [submitted, setSubmitted] = useState(false);
+
+    const retrieveCategories = () => {
+        CategoryService.getAllCategories()
+            .then(response => {
+                setCategories(response.data);
+                console.log("test");
+                console.log(response.data);
+            })
+            .catch(e => {
+                console.log(e);
+            });
+    };
+
+    useEffect(() => {
+        retrieveCategories();
+    }, []);
 
     const handleInputChange = event => {
         const { name, value } = event.target;
@@ -20,17 +38,11 @@ const CreatePost = () => {
         var data = {
             title: post.title,
             content: post.content,
-            categoryId: 1
+            categoryId: post.categoryId
         };
 
         PostService.createPost(data)
             .then(response => {
-                // setPost({
-                //     id: response.data.id,
-                //     title: response.data.title,
-                //     content: response.data.content,
-                //     categoryId: response.data.categoryId
-                // });
                 setSubmitted(true);
                 console.log(response.data);
             })
@@ -79,6 +91,17 @@ const CreatePost = () => {
                             onChange={handleInputChange}
                             name="content"
                         />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="content">Categories</label>
+                        <select name="categoryId" value={post.categoryId} onChange={handleInputChange}>
+                            {categories.map(category => {
+                                return (
+                                    <option value={category.id}>{category.name}</option>
+                                );
+                            })}
+                        </select>
                     </div>
 
                     <button style={{marginTop: 10}} onClick={savePost} className="btn btn-success">
