@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import PostService from "../services/post.service";
+import CategoryService from "../services/category.service";
+import AuthService from "../services/auth.service";
 
 const Post = props => {
     const { id }= useParams();
@@ -13,16 +15,31 @@ const Post = props => {
         category: {
             id: null,
             name: ""
+        },
+        user: {
+            id: null,
+            username: ""
         }
     };
+
     const [currentPost, setCurrentPost] = useState(initialPostState);
+    const [categories, setCategories] = useState([]);
     const [message, setMessage] = useState("");
 
     const getPost = (postId) => {
         PostService.getPostById(postId)
             .then(response => {
                 setCurrentPost(response.data);
-                console.log(response.data);
+            })
+            .catch(e => {
+                console.log(e);
+            });
+    };
+
+    const retrieveCategories = () => {
+        CategoryService.getAllCategories()
+            .then(response => {
+                setCategories(response.data);
             })
             .catch(e => {
                 console.log(e);
@@ -30,9 +47,15 @@ const Post = props => {
     };
 
     useEffect(() => {
-        if (id)
+        if (id) {
             getPost(id);
+            retrieveCategories();
+        }
     }, [id]);
+
+    const handleCategoryChange = (event) => {
+        setCurrentPost({ ...currentPost, category: { id: event.target.value, name: event.target.value }});
+    }
 
     const handleInputChange = event => {
         const { name, value } = event.target;
@@ -42,9 +65,8 @@ const Post = props => {
     const updatePost = () => {
         PostService.updatePostById(currentPost)
             .then(response => {
-                setCurrentPost({...currentPost, category: response.data.category});
+                setCurrentPost({...currentPost});
                 setMessage("The post was updated successfully!");
-                console.log(response.data);
             })
             .catch(e => {
                 console.log(e);
@@ -54,7 +76,6 @@ const Post = props => {
     const deletePost = () => {
         PostService.deletePostById(currentPost.id)
             .then(response => {
-                console.log(response.data);
                 navigate("/posts");
             })
             .catch(e => {
@@ -92,19 +113,21 @@ const Post = props => {
                         </div>
 
                         <div className="form-group">
-                            <label htmlFor="category">Category</label>
-                            <input
-                                type="text"
-                                className="form-control"
-                                id="category"
-                                name="category"
-                                value={currentPost.category.name}
-                                onChange={handleInputChange}
-                            />
+                            <label htmlFor="content">Categories</label>
+                            <select name="category" value={currentPost.category.id} onChange={handleCategoryChange}>
+                                {categories.map(category => {
+                                    return (
+                                        <option value={category.id}>{category.name}</option>
+                                    );
+                                })}
+                            </select>
                         </div>
                     </form>
 
-                    <button style={{marginTop: 10, marginRight: 10, float: "left"}} className="btn btn-danger" onClick={deletePost}>
+                    <button style={{marginTop: 10, marginRight: 10, float: "left"}}
+                            className="btn btn-danger"
+                            disabled={AuthService.checkAuthorities(currentPost.user.username)}
+                            onClick={deletePost}>
                         Delete Post
                     </button>
 
@@ -112,12 +135,14 @@ const Post = props => {
                         style={{marginTop: 10, float: "right"}}
                         type="submit"
                         className="btn btn-success"
+                        disabled={AuthService.checkAuthorities(currentPost.user.username)}
                         onClick={updatePost}
                     >
                         Update Post
                     </button>
-                    <p>{message}</p>
+
                 </div>
+
             ) : (
                 <div>
                     <br />

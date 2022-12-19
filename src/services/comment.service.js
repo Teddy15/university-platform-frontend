@@ -3,6 +3,10 @@ import authHeader from "./auth-header";
 
 const API_URL = "http://localhost:8080/uni-platform/comments";
 
+const getCommentById = (id) => {
+    return axios.get(API_URL + `/${id}`, { headers: authHeader() });
+}
+
 const createComment = (comment) => {
     return axios.post(API_URL,
         {postId: comment.postId, content: comment.content},
@@ -20,6 +24,7 @@ const deleteComment = (id) => {
 }
 
 const CommentService = {
+    getCommentById,
     createComment,
     updateComment,
     deleteComment

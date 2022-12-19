@@ -35,11 +35,24 @@ const getCurrentUser = () => {
     return JSON.parse(localStorage.getItem("user"));
 };
 
+const checkAuthorities = (username) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const [...array] = Array.from(user.roles);
+    if(array[0] === 'ROLE_ADMIN') return false;
+    return user.username !== username;
+}
+
+const isUserLoggedIn = () => {
+    return JSON.parse(localStorage.getItem("user")) === null;
+}
+
 const AuthService = {
     register,
     login,
     logout,
     getCurrentUser,
+    checkAuthorities,
+    isUserLoggedIn
 };
 
 export default AuthService;

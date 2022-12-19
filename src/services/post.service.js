@@ -18,7 +18,7 @@ const createPost = (post) => {
 }
 
 const updatePostById = (post) => {
-    return axios.post(API_URL + `/${post.id}`,
+    return axios.put(API_URL + `/${post.id}`,
         { title: post.title, content: post.content, categoryId: post.category.id },
         { headers: authHeader() });
 }

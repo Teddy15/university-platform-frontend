@@ -39,7 +39,7 @@ const App = () => {
                 Posts
               </Link>
             </li>
-            <li className="nav-item">
+            <li hidden={AuthService.isUserLoggedIn()} className="nav-item">
               <Link to={"/posts/create"} className="nav-link">
                 Create Post
               </Link>

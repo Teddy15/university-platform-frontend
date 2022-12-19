@@ -7,6 +7,7 @@ import Form from "react-validation/build/form";
 import Input from "react-validation/build/input";
 import CheckButton from "react-validation/build/button";
 import CommentService from "../services/comment.service";
+import AuthService from "../services/auth.service";
 
 const Posts = () => {
     const nav = useNavigate();
@@ -125,7 +126,10 @@ const Posts = () => {
                             </label>{" "}
                             {currentPost.category.name}
                         </div>
-                        <button style={{marginTop: 10, marginBottom: 10}} className="btn btn-warning" onClick={redirectToPostPage}>Edit Post</button>
+                        <button style={{marginTop: 10, marginBottom: 10}}
+                                className="btn btn-warning"
+                                disabled={AuthService.checkAuthorities(currentPost.user.username)}
+                                onClick={redirectToPostPage}>Edit Post</button>
                         {currentPost.comments.map(comment => {
                             return (
                                 <div>
