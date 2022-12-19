@@ -19,7 +19,6 @@ const Posts = () => {
     const [currentPost, setCurrentPost] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(-1);
     const [commentContent, setCommentContent] = useState("");
-    const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
 
     const required = (value) => {
@@ -53,7 +52,6 @@ const Posts = () => {
                         error.message ||
                         error.toString();
 
-                    setLoading(false);
                     setMessage(resMessage);
                 }
             );
@@ -149,14 +147,12 @@ const Posts = () => {
                                             value={commentContent}
                                             onChange={onChangeCommentContent}
                                             validations={[required]}
+                                            disabled={AuthService.isUserLoggedIn()}
                                         />
                                     </div>
 
                                     <div className="form-group">
-                                        <button className="btn btn-primary btn-block" disabled={loading}>
-                                            {loading && (
-                                                <span className="spinner-border spinner-border-sm"/>
-                                            )}
+                                        <button disabled={AuthService.isUserLoggedIn()} className="btn btn-primary btn-block">
                                             <span>Add comment</span>
                                         </button>
                                     </div>

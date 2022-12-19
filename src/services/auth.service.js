@@ -37,6 +37,9 @@ const getCurrentUser = () => {
 
 const checkAuthorities = (username) => {
     const user = JSON.parse(localStorage.getItem("user"));
+    if (user === null) {
+        return true;
+    }
     const [...array] = Array.from(user.roles);
     if(array[0] === 'ROLE_ADMIN') return false;
     return user.username !== username;
