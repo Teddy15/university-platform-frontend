@@ -18,8 +18,8 @@ const Post = props => {
     const [currentPost, setCurrentPost] = useState(initialPostState);
     const [message, setMessage] = useState("");
 
-    const getPost = (id) => {
-        PostService.getPostById(id)
+    const getPost = (postId) => {
+        PostService.getPostById(postId)
             .then(response => {
                 setCurrentPost(response.data);
                 console.log(response.data);
@@ -39,11 +39,11 @@ const Post = props => {
         setCurrentPost({ ...currentPost, [name]: value });
     };
 
-    const updatePost = status => {
+    const updatePost = () => {
         PostService.updatePostById(currentPost)
             .then(response => {
                 setCurrentPost({...currentPost, category: response.data.category});
-                setMessage("The tutorial was updated successfully!");
+                setMessage("The post was updated successfully!");
                 console.log(response.data);
             })
             .catch(e => {
@@ -121,7 +121,7 @@ const Post = props => {
             ) : (
                 <div>
                     <br />
-                    <p>Please click on a Tutorial!</p>
+                    <p>Please click on a post!</p>
                 </div>
             )}
         </div>

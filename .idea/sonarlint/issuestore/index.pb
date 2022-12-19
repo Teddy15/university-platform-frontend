@@ -15,9 +15,6 @@ B
 src/redux/store.js,b\f\bf7810bad55c8c031251188a5290278db09e4dfc
 I
 src/redux/actions/auth.js,7\b\7b7d3f27cdcafe1331e1861cb0b636582d80d338
-:
-
-src/App.js,1\e\1e43fa63aecd2127be034b3fb9d4caa172275714
 =
 src/index.css,c\5\c5d38a62d1faae90a2acaa34b79a7ef365c917e4
 ;
