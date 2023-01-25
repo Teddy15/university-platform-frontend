@@ -151,9 +151,9 @@ const Posts = () => {
                                         />
                                     </div>
 
-                                    <div className="form-group">
+                                    <div className="form-group" >
                                         <button disabled={AuthService.isUserLoggedIn()} className="btn btn-primary btn-block">
-                                            <span>Add comment</span>
+                                            <span >Add comment</span>
                                         </button>
                                     </div>
 
@@ -164,7 +164,7 @@ const Posts = () => {
                                             </div>
                                         </div>
                                     )}
-                                    <CheckButton style={{ display: "none" }} ref={addCommentButton} />
+                                    <CheckButton style={{ display: "none", paddingTop: 0.25}} ref={addCommentButton} />
                                 </Form>
                             </div>
                         </div>

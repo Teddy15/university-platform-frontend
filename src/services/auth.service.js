@@ -41,7 +41,7 @@ const checkAuthorities = (username) => {
         return true;
     }
     const [...array] = Array.from(user.roles);
-    if(array[0] === 'ROLE_ADMIN') return false;
+    if(array.includes('ROLE_ADMIN')) return false;
     return user.username !== username;
 }
 

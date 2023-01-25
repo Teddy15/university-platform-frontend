@@ -36,6 +36,14 @@ label {
   margin: auto;
 }
 
+.CategoriesList{
+  text-align:center;
+
+}
+.CategoriesList ul li {
+  display: inline-block;
+}
+
 .submit-form {
   max-width: 300px;
   margin: auto;
