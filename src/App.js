@@ -11,6 +11,7 @@ import Posts from "./components/Posts";
 import Profile from "./components/Profile";
 import CreatePost from "./components/CreatePost";
 import Post from "./components/Post";
+import Categories from "./components/Categories";
 
 const App = () => {
   const [currentUser, setCurrentUser] = useState(undefined);
@@ -42,6 +43,11 @@ const App = () => {
             <li hidden={AuthService.isUserLoggedIn()} className="nav-item">
               <Link to={"/posts/create"} className="nav-link">
                 Create Post
+              </Link>
+            </li>
+            <li hidden={AuthService.checkAuthorities()} className="nav-item">
+              <Link to={"/categories"} className="nav-link">
+                Categories
               </Link>
             </li>
           </div>
@@ -81,6 +87,7 @@ const App = () => {
             <Route path="/" element={<Posts/>} />
             <Route path="/posts" element={<Posts/>} />
             <Route path="/posts/create" element={<CreatePost/>} />
+            <Route path="/categories" element={<Categories/>} />
             <Route path="/posts/:id" element = {<Post/>} />
             <Route path="/login" element={<Login/>} />
             <Route path="/register" element={<Register/>} />
