@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import AuthService from "../services/auth.service";
 import UserService from "../services/user.service";
 import {useNavigate} from "react-router-dom";
+import AccountStatus from "./accountStatus";
 
 const Profile = () => {
     const currentUser = AuthService.getCurrentUser();
@@ -65,6 +66,7 @@ const Profile = () => {
         <div className="col-md-4 submit-form" style={{
             position: 'absolute', left: '50%', top: '50%',
             transform: 'translate(-50%, -50%)'}}>
+            <AccountStatus text1={`Posts`} text2={`Add db value for amount of posts`} className={""} id={"login-id"}/>
                 <div className="form-group">
                     <label htmlFor="username">Username</label>
                         <input
