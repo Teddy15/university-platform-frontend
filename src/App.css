@@ -45,3 +45,11 @@ label {
   max-width: 300px;
   margin: auto;
 }
+
+.nav {
+  backdrop-filter: blur(40px);
+}
+
+.btn {
+  margin-top: 10px;
+}
