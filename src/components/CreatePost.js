@@ -1,33 +1,16 @@
-import React, {useEffect, useState} from "react";
+import React, { useState } from "react";
 import PostService from "../services/post.service";
-import CategoryService from "../services/category.service";
 
-const CreatePost = () => {
-    const initialPostState = {
-        id: null,
-        title: "",
-        content: "",
-        categoryId: 1
-    };
+const initialPostState = {
+    id: null,
+    title: "",
+    content: "",
+    categoryId: 1
+}
+
+const CreatePost: React.FC = (categories) => {
     const [post, setPost] = useState(initialPostState);
-    const [categories, setCategories] = useState([]);
     const [submitted, setSubmitted] = useState(false);
-
-    const retrieveCategories = () => {
-        CategoryService.getAllCategories()
-            .then(response => {
-                setCategories(response.data);
-                console.log("test");
-                console.log(response.data);
-            })
-            .catch(e => {
-                console.log(e);
-            });
-    };
-
-    useEffect(() => {
-        retrieveCategories();
-    }, []);
 
     const handleInputChange = event => {
         const { name, value } = event.target;

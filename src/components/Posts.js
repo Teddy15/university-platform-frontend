@@ -9,7 +9,7 @@ import CheckButton from "react-validation/build/button";
 import CommentService from "../services/comment.service";
 import AuthService from "../services/auth.service";
 
-const Posts = () => {
+const Posts: React.FC = (categories) => {
     const nav = useNavigate();
 
     const form = useRef();
@@ -20,6 +20,7 @@ const Posts = () => {
     const [currentIndex, setCurrentIndex] = useState(-1);
     const [commentContent, setCommentContent] = useState("");
     const [message, setMessage] = useState("");
+    const [selectedCategory, setSelectedCategory] = useState(categories[0].name ?? "No categories")
 
     const required = (value) => {
         if (!value) {
@@ -82,9 +83,21 @@ const Posts = () => {
         nav("/posts/" + currentPost.id);
     }
 
+    const onCategoriesChange = (e) => {
+        setSelectedCategory(e.value);
+    }
+
     return (
         <div className="list row">
             <div className="col-md-6">
+                <div>Search by category</div>
+                <select name="categoryId" value={selectedCategory} onChange={(e) => onCategoriesChange(e)}>
+                    {categories.map(category => {
+                        return (
+                            <option value={category.name}>{category.name}</option>
+                        );
+                    })}
+                </select>
                 <h4>Posts</h4>
 
                 <ul className="list-group">

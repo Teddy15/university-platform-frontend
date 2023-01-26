@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import PostService from "../services/post.service";
-import CategoryService from "../services/category.service";
 import AuthService from "../services/auth.service";
 
-const Post = props => {
+const Post: React.FC = (categories) => {
     const { id }= useParams();
     let navigate = useNavigate();
 
@@ -23,7 +22,6 @@ const Post = props => {
     };
 
     const [currentPost, setCurrentPost] = useState(initialPostState);
-    const [categories, setCategories] = useState([]);
     const [message, setMessage] = useState("");
 
     const getPost = (postId) => {
@@ -36,20 +34,9 @@ const Post = props => {
             });
     };
 
-    const retrieveCategories = () => {
-        CategoryService.getAllCategories()
-            .then(response => {
-                setCategories(response.data);
-            })
-            .catch(e => {
-                console.log(e);
-            });
-    };
-
     useEffect(() => {
         if (id) {
             getPost(id);
-            retrieveCategories();
         }
     }, [id]);
 
