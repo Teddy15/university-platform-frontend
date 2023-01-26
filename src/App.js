@@ -93,7 +93,7 @@ const App = () => {
         <div className="container mt-3">
           <Routes>
             <Route path="/" element={<Posts/>} />
-            <Route path="/posts" element={<Posts/>} />
+            <Route path="/posts" element={<Posts categories={categories}/>} />
             <Route path="/posts/create" element={<CreatePost categories={categories}/>} />
             <Route path="/posts/:id" element = {<Post categories={categories}/>} />
             <Route path="/login" element={<Login/>} />

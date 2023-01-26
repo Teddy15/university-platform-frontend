@@ -9,7 +9,7 @@ import CheckButton from "react-validation/build/button";
 import CommentService from "../services/comment.service";
 import AuthService from "../services/auth.service";
 
-const Posts: React.FC = (categories) => {
+const Posts = (categories) => {
     const nav = useNavigate();
 
     const form = useRef();
